@@ -9,6 +9,8 @@ import ImageFont, ImageDraw
 import moviepy.editor as mp
 from moviepy.audio.AudioClip import AudioArrayClip
 from moviepy.audio.io.AudioFileClip import AudioFileClip
+from moviepy.video.VideoClip import TextClip
+from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
 
 from random import choice
 
@@ -63,13 +65,15 @@ def prepare_image(text, v_id):
     image.save("tmp/" + str(v_id) + ".png")
 
 
-def prepare_audio(input_file, v_id):
+def prepare_audio(input_file, v_id, rate):
     """ Speed up the input sound and save it in the temporary folder using its
         unique video id as filename. """
 
-    rate, data = wavfile.read(input_file)
+    # rate, data = wavfile.read(input_file)
+    audio = AudioFileClip(input_file)
+    data = audio.to_soundarray(fps=rate)
     data = speedup_audio(data, FACTOR)
-    wavfile.write("tmp/" + str(v_id) + ".wav", rate, data)
+    # wavfile.write("tmp/" + str(v_id) + ".wav", rate, data)
 
     return rate, data
 
@@ -87,6 +91,9 @@ def build_video(id, image_file, sound_array, rate):
     print duration
     image = mp.ImageClip("images/" + image_file, duration=duration)
     audio = AudioArrayClip(sound_array, fps=rate)
+    text = TextClip(txt="Der holle rache", bg_color="rgba(0, 0, 0, 0.7)", color="white", size=(1920, 150), font="Droid-Sans-Fallback").set_duration(duration)
+    text = text.set_pos((0, 100))
+    # text.preview()
     # audio.preview()
     # audio = AudioFileClip("tmp/1.wav")
 
@@ -96,7 +103,8 @@ def build_video(id, image_file, sound_array, rate):
 
     video = (image.set_audio(audio)
                   .set_fps(1))
-    video.write_videofile("movie.webm")
+    video = CompositeVideoClip([video, text]).set_duration(duration)
+    video.write_videofile("movie.mp4")
 
 
 if __name__ == "__main__":
@@ -109,11 +117,12 @@ if __name__ == "__main__":
     text = sys.argv[3]
 
     v_id = 1
+    rate = 44100
     # v_id = generate_unique_id()
 
     # Prepare the image and audio. The files are saved to tmp/<unique id>
     # prepare_image(text, v_id)
-    rate, sound_array = prepare_audio(input_file, v_id)
+    rate, sound_array = prepare_audio(input_file, v_id, rate)
 
     image_file = choice([file for file in os.listdir("./images")])
 
