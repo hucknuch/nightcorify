@@ -6,6 +6,9 @@ from scipy.io import wavfile
 
 import Image
 import ImageFont, ImageDraw
+import moviepy.editor as mp
+from moviepy.audio.AudioClip import AudioArrayClip
+from moviepy.audio.io.AudioFileClip import AudioFileClip
 
 from random import choice
 
@@ -68,15 +71,32 @@ def prepare_audio(input_file, v_id):
     data = speedup_audio(data, FACTOR)
     wavfile.write("tmp/" + str(v_id) + ".wav", rate, data)
 
+    return rate, data
 
-def build_video(id):
+
+def build_video(id, image_file, sound_array, rate):
     """ Combine the new audio and image to make a nightcore video """
 
-    cmd = ('ffmpeg -loop 1 -r %s -i %s -i %s -shortest -acodec copy -f avi %s' %
-        (FPS, "tmp/" + str(v_id) + ".png", "tmp/" + str(v_id) + ".wav", output_file))
+    # cmd = ('ffmpeg -loop 1 -r %s -i %s -i %s -shortest -acodec copy -f avi %s' %
+    #     (FPS, "tmp/" + str(v_id) + ".png", "tmp/" + str(v_id) + ".wav", output_file))
+    #
+    # os.system(cmd)
+    # print 'Video is complete, output written to %s' % output_file
 
-    os.system(cmd)
-    print 'Video is complete, output written to %s' % output_file
+    duration = len(sound_array) / float(rate)
+    print duration
+    image = mp.ImageClip("images/" + image_file, duration=duration)
+    audio = AudioArrayClip(sound_array, fps=rate)
+    # audio.preview()
+    # audio = AudioFileClip("tmp/1.wav")
+
+    # audio = mp.AudioClip(audio.make_frame)
+    # video = mp.CompositeVideoClip([image, audio])
+    # video.preview()
+
+    video = (image.set_audio(audio)
+                  .set_fps(1))
+    video.write_videofile("movie.webm")
 
 
 if __name__ == "__main__":
@@ -92,7 +112,9 @@ if __name__ == "__main__":
     # v_id = generate_unique_id()
 
     # Prepare the image and audio. The files are saved to tmp/<unique id>
-    prepare_image(text, v_id)
-    prepare_audio(input_file, v_id)
+    # prepare_image(text, v_id)
+    rate, sound_array = prepare_audio(input_file, v_id)
 
-    build_video(v_id)
+    image_file = choice([file for file in os.listdir("./images")])
+
+    build_video(v_id, image_file, sound_array, rate)
