@@ -21,7 +21,7 @@ def speedup_audio(sound_array, factor):
 
 
 def prepare_audio(input_file, rate=44100, speedup=1.3):
-    """ Read the audio from the input file, speed it up and return is as an
+    """ Read the audio from the input file, speed it up and return it as an
         AudioArrayClip. """
 
     audio = AudioFileClip(input_file)
