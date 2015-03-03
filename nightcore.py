@@ -1,5 +1,6 @@
 # !/usr/bin/python
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8
+
 import numpy as np
 
 from moviepy.audio.AudioClip import AudioArrayClip
@@ -36,6 +37,7 @@ def prepare_image(text, duration, fps=1):
         clip. """
 
     image_file = choice([file for file in listdir("./images")])
+
     image = ImageClip("images/" + image_file).set_fps(fps)
     text = TextClip(txt=text, bg_color="rgba(0, 0, 0, 0.7)", color="white",
                     size=(1920, 150), font="Droid-Sans-Fallback")
