@@ -1,4 +1,4 @@
-#!/usr/bin/python
+# !/usr/bin/python
 # -*- coding: utf-8 -*-
 import numpy as np
 
@@ -12,7 +12,7 @@ from os import listdir
 
 
 def speedup_audio(sound_array, factor):
-    """ Multiplies the sound's speed by some factor
+    """ Multiplies the sound's speed by some factor (including pitch shift).
         source: http://goo.gl/MlI9UM """
 
     indices = np.round(np.arange(0, len(sound_array), factor))
@@ -20,11 +20,11 @@ def speedup_audio(sound_array, factor):
     return sound_array[indices.astype(int)]
 
 
-def prepare_audio(input_file, rate=44100, speedup=1.3):
+def prepare_audio(file_name, rate=44100, speedup=1.3):
     """ Read the audio from the input file, speed it up and return it as an
         AudioArrayClip. """
 
-    audio = AudioFileClip(input_file)
+    audio = AudioFileClip(file_name)
     data = audio.to_soundarray(fps=rate)
     data = speedup_audio(data, speedup)
 
@@ -36,7 +36,7 @@ def prepare_image(text, duration, fps=1):
         clip. """
 
     image_file = choice([file for file in listdir("./images")])
-    image = ImageClip("./images/" + image_file).set_fps(fps)
+    image = ImageClip("images/" + image_file).set_fps(fps)
     text = TextClip(txt=text, bg_color="rgba(0, 0, 0, 0.7)", color="white",
                     size=(1920, 150), font="Droid-Sans-Fallback")
 
