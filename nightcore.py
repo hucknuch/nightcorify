@@ -46,7 +46,7 @@ def prepare_image(text, duration, fps=1):
     """
 
     # Pick a random file from the images directory and load it into a clip.
-    image_file = choice([file for file in listdir("./images")])
+    image_file = choice([file for file in listdir("images")])
     image = ImageClip("images/" + image_file).set_fps(fps)
 
     # Add the text on a transparent black ribbon.
