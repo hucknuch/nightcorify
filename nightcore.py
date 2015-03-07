@@ -32,7 +32,7 @@ def prepare_audio(file_name, rate=44100, speedup=1.3):
     AudioArrayClip.
     """
 
-    # Create a new audio clip from file and write is to an array.
+    # Create a new audio clip from file and write it to an array.
     audio = AudioFileClip(file_name)
     data = audio.to_soundarray(fps=rate)
 
