@@ -34,8 +34,8 @@ def dance_with_the_devil(sound_array, rate, glitches=0.25,
     """
 
     # Create an array with all moments a glitch can occur.
-    glitch_ops = np.arange(1, int(len(sound_array) / rate),
-                           glitch_duration * 2)
+    glitch_ops = np.arange(1, int(len(sound_array) / rate -
+                           (glitch_duration * 2)), glitch_duration * 2)
 
     # Pick a fraction (the variable "glitches") of these opportunities
     np.random.shuffle(glitch_ops)
