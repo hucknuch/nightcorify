@@ -122,5 +122,5 @@ if __name__ == "__main__":
               "<title> [-d]"
         exit(1)
 
-    devil = (len(argv) > 4 and argv[4].lower == "-d")
+    devil = (len(argv) > 4 and argv[4].lower() == "-d")
     nightcorify(argv[1], argv[2], argv[3], devil)
