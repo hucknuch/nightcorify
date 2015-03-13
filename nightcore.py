@@ -96,7 +96,7 @@ def prepare_image(text, duration, fps=1):
     return CompositeVideoClip([image, text]).set_duration(duration)
 
 
-def nightcorify(source_file, destination_file, text, devil=False):
+def nightcorify(source_file, destination_file, text, devil=False, video=True):
     """
     Create a nightcore video using the audio from source_file and write it to
     destination_file. Draw the text on top of the video.
@@ -105,13 +105,17 @@ def nightcorify(source_file, destination_file, text, devil=False):
     # Read the audio from our source file.
     audio = prepare_audio(source_file, devil=devil)
 
-    # Create a random image with the user text on it and set its duration to
-    # the duration of the sped up audio.
-    image = prepare_image(text, audio.duration)
+    if video:
+        # Create a random image with the user text on it and set its duration
+        # to the duration of the sped up audio.
+        image = prepare_image(text, audio.duration)
 
-    # Add the audio to this image clip and write the result to our destination
-    # file.
-    image.set_audio(audio).write_videofile(destination_file)
+        # Add the audio to this image clip and write the result to our
+        # destination file.
+        image.set_audio(audio).write_videofile(destination_file)
+    else:
+        audio.write_audiofile(destination_file)
+
 
 
 if __name__ == "__main__":
@@ -119,8 +123,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("input", help="inputfile")
     parser.add_argument("output", help="outputfile")
-    parser.add_argument("title", help="video overlay text")
+    parser.add_argument("--title", help="video overlay text", default="")
     parser.add_argument("-d", help="devil mode", action="store_true")
+    parser.add_argument("-a", help="audio only", action="store_false")
     args = parser.parse_args()
 
-    nightcorify(args.input, args.output, args.title, args.d)
+    nightcorify(args.input, args.output, args.title, args.d, args.a)
