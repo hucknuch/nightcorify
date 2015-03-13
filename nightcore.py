@@ -34,8 +34,10 @@ def dance_with_the_devil(sound_array, rate, glitches=0.25,
     """
 
     # Create an array with all moments a glitch can occur.
-    glitch_ops = np.arange(1, int(len(sound_array) / rate -
-                           (glitch_duration * 2)), glitch_duration * 2)
+    glitch_ops = np.arange(
+        1, int(len(sound_array) / rate - (glitch_duration * 2)),
+        glitch_duration * 2
+    )
 
     # Pick a fraction (the variable "glitches") of these opportunities
     np.random.shuffle(glitch_ops)
@@ -83,7 +85,7 @@ def prepare_image(text, duration, fps=1):
     """
 
     # Pick a random file from the images directory and load it into a clip.
-    image_file = choice([file for file in listdir("images")])
+    image_file = choice([f for f in listdir("images")])
     image = ImageClip("images/" + image_file).set_fps(fps)
 
     # Add the text on a transparent black ribbon.
@@ -117,12 +119,11 @@ def nightcorify(source_file, destination_file, text, devil=False, video=True):
         audio.write_audiofile(destination_file)
 
 
-
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("input", help="inputfile")
-    parser.add_argument("output", help="outputfile")
+    parser.add_argument("input", help="input file")
+    parser.add_argument("output", help="output file")
     parser.add_argument("--title", help="video overlay text", default="")
     parser.add_argument("-d", help="devil mode", action="store_true")
     parser.add_argument("-a", help="audio only", action="store_false")
