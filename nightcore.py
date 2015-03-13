@@ -115,12 +115,12 @@ def nightcorify(source_file, destination_file, text, devil=False):
 
 
 if __name__ == "__main__":
-    from sys import argv, exit
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input", help="inputfile")
+    parser.add_argument("output", help="outputfile")
+    parser.add_argument("title", help="video overlay text")
+    parser.add_argument("-d", help="devil mode", action="store_true")
+    args = parser.parse_args()
 
-    if len(argv) < 4:
-        print "usage: nightcore.py <inputfile.wav> <outputfile.avi> " + \
-              "<title> [-d]"
-        exit(1)
-
-    devil = (len(argv) > 4 and argv[4].lower() == "-d")
-    nightcorify(argv[1], argv[2], argv[3], devil)
+    nightcorify(args.input, args.output, args.title, args.d)
